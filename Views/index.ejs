@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Datang</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <!-- Pesan Alert (jika jenisAlert ada) -->
+    <% if (typeof jenisAlert !== 'undefined' && jenisAlert) { %> <% if
+    (jenisAlert === "info") { %>
+    <script>
+      Swal.fire({
+        icon: "info",
+        title: "Info",
+        text: "<%= message || 'Informasi tidak tersedia' %>",
+        confirmButtonText: "OK",
+      });
+    </script>
+    <% } else if (jenisAlert === "success") { %>
+    <script>
+      Swal.fire({
+        icon: "success",
+        title: "Sukses",
+        text: "<%= message || 'Operasi berhasil' %>",
+        confirmButtonText: "OK",
+      });
+    </script>
+    <% } else if (jenisAlert === "error") { %>
+    <script>
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "<%= message || 'Terjadi kesalahan' %>",
+        confirmButtonText: "OK",
+      });
+    </script>
+    <% } %> <% } %>
+
+    <!-- Konten Utama -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-gray-800 mb-6">Selamat Datang</h1>
+      <button
+        onclick="window.location.href='/ppdb'"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+      >
+        Pendaftaran
+      </button>
+    </div>
+  </body>
+</html>

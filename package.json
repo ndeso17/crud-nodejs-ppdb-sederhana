@@ -1,0 +1,34 @@
+{
+  "name": "ppdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./Public/css/tailwind.css -o ./Public/css/styles.css --watch",
+    "start": "node App.js",
+    "startwin": "node Windows.js",
+    "dev": "nodemon App.js",
+    "devwin": "nodemon Windows.js",
+    "develop": "concurrently \"npm run dev\" \"npm run build:css\"",
+    "developwin": "concurrently \"npm run devwin\" \"npm run build:css\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mysql2": "^3.13.0"
+  },
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "concurrently": "^9.1.2",
+    "module-alias": "^2.2.3",
+    "nodemon": "^3.1.9",
+    "tailwindcss": "^3.4.17"
+  }
+}

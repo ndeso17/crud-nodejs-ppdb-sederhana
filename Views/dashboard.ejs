@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard PPDB</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Dashboard PPDB
+      </h1>
+
+      <!-- Tabel -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow-md rounded-lg">
+          <thead>
+            <tr
+              class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+            >
+              <th class="py-3 px-6 text-left">Nama</th>
+              <th class="py-3 px-6 text-left">Asal Sekolah</th>
+              <th class="py-3 px-6 text-left">Kontak</th>
+              <th class="py-3 px-6 text-left">Tanggal Mendaftar</th>
+              <th class="py-3 px-6 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-600 text-sm font-light">
+            <% if (users && users.length > 0) { %> <% users.forEach((user) => {
+            %>
+            <tr class="border-b border-gray-200 hover:bg-gray-100">
+              <td class="py-3 px-6 text-left"><%= user.nama %></td>
+              <td class="py-3 px-6 text-left"><%= user.asalsekolah %></td>
+              <td class="py-3 px-6 text-left"><%= user.kontak %></td>
+              <td class="py-3 px-6 text-left">
+                <%= user.tanggal_daftar_formatted %>
+              </td>
+              <td class="py-3 px-6 text-center">
+                <button
+                  onclick="showDetail('<%= user.nisn %>', '<%= user.nama %>', '<%= user.jk %>', '<%= user.asalsekolah %>', '<%= user.minat %>', '<%= user.kontak %>', '<%= user.alamat %>', '<%= user.id %>')"
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg mr-2"
+                >
+                  Views
+                </button>
+                <button
+                  onclick="confirmDelete('<%= user.nisn %>')"
+                  class="bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-lg"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <% }) %> <% } else { %>
+            <tr>
+              <td colspan="5" class="py-3 px-6 text-center text-gray-500">
+                Tidak ada data pengguna.
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal untuk Detail -->
+    <div id="detailModal" class="modal">
+      <div class="modal-content">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Detail Pengguna</h2>
+        <div id="detailContent" class="space-y-4">
+          <!-- Konten detail akan diisi oleh JavaScript -->
+        </div>
+        <div id="modalActions" class="mt-6 flex justify-end space-x-4">
+          <button
+            id="editButton"
+            onclick="toggleEditMode()"
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg"
+          >
+            Edit
+          </button>
+          <button
+            id="closeButton"
+            onclick="closeModal()"
+            class="bg-gray-500 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript untuk Logika Modal -->
+    <script>
+      let isEditMode = false;
+      let currentNisn = null;
+
+      function showDetail(nisn, nama, jk, asalsekolah, minat, kontak, alamat) {
+        currentNisn = nisn;
+        const modal = document.getElementById("detailModal");
+        const content = document.getElementById("detailContent");
+        content.innerHTML = `
+          <div>
+              <label class="block text-sm font-medium text-gray-700">NISN</label>
+              <input id="nisnInput" type="text" value="${nisn}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-100" disabled readonly>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Nama</label>
+              <input id="namaInput" type="text" value="${nama}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+              <select id="jkInput" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>
+                <option value="Laki-laki" ${
+                  jk === "Laki-laki" ? "selected" : ""
+                }>Laki-laki</option>
+                <option value="Perempuan" ${
+                  jk === "Perempuan" ? "selected" : ""
+                }>Perempuan</option>
+              </select>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Asal Sekolah</label>
+              <input id="asalsekolahInput" type="text" value="${asalsekolah}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Minat Jurusan</label>
+              <select id="minatInput" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>
+                <option value="TKJ" ${
+                  minat === "TKJ" ? "selected" : ""
+                }>TKJ</option>
+                <option value="RPL" ${
+                  minat === "RPL" ? "selected" : ""
+                }>RPL</option>
+                <option value="TBSM" ${
+                  minat === "TBSM" ? "selected" : ""
+                }>TBSM</option>
+                <option value="TKR" ${
+                  minat === "TKR" ? "selected" : ""
+                }>TKR</option>
+              </select>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Kontak</label>
+              <input id="kontakInput" type="text" value="${kontak}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Alamat</label>
+              <textarea id="alamatInput" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" disabled>${alamat}</textarea>
+          </div>
+        `;
+        modal.style.display = "flex";
+        isEditMode = false;
+        updateModalButtons();
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("detailModal");
+        modal.style.display = "none";
+        isEditMode = false;
+        updateModalButtons();
+      }
+
+      function toggleEditMode() {
+        isEditMode = !isEditMode;
+        const inputs = document.querySelectorAll(
+          "#detailContent input:not(#nisnInput), #detailContent select, #detailContent textarea"
+        );
+        inputs.forEach((input) => {
+          input.disabled = !isEditMode;
+          if (isEditMode) {
+            input.classList.add("border-blue-500");
+            input.classList.remove("bg-gray-100");
+          } else {
+            input.classList.remove("border-blue-500");
+            input.classList.add("bg-gray-100");
+          }
+        });
+        updateModalButtons();
+      }
+
+      function updateModalButtons() {
+        const editButton = document.getElementById("editButton");
+        const closeButton = document.getElementById("closeButton");
+        if (isEditMode) {
+          editButton.textContent = "Save";
+          editButton.className =
+            "bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg";
+          editButton.onclick = saveChanges;
+          closeButton.textContent = "Cancel";
+          closeButton.className =
+            "bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg";
+          closeButton.onclick = toggleEditMode;
+        } else {
+          editButton.textContent = "Edit";
+          editButton.className =
+            "bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg";
+          editButton.onclick = toggleEditMode;
+          closeButton.textContent = "Close";
+          closeButton.className =
+            "bg-gray-500 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg";
+          closeButton.onclick = closeModal;
+        }
+      }
+
+      function saveChanges() {
+        const nama = document.getElementById("namaInput").value;
+        const jk = document.getElementById("jkInput").value;
+        const asalsekolah = document.getElementById("asalsekolahInput").value;
+        const minat = document.getElementById("minatInput").value;
+        const kontak = document.getElementById("kontakInput").value;
+        const alamat = document.getElementById("alamatInput").value;
+
+        fetch("/dashboard/update", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nisn: currentNisn,
+            nama,
+            jk,
+            asalsekolah,
+            minat,
+            kontak,
+            alamat,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              Swal.fire({
+                icon: "success",
+                title: "Sukses",
+                text: "Data berhasil diperbarui!",
+                confirmButtonText: "OK",
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data.message || "Gagal memperbarui data!",
+                confirmButtonText: "OK",
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Terjadi kesalahan: " + error.message,
+              confirmButtonText: "OK",
+            });
+          });
+      }
+
+      function confirmDelete(nisn) {
+        Swal.fire({
+          title: "Apakah Anda yakin?",
+          text: "Data ini akan dihapus secara permanen!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Ya, hapus!",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch("/dashboard/delete", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ nisn }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.hapus.success) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Sukses",
+                    text: "Data berhasil dihapus!",
+                    confirmButtonText: "OK",
+                  }).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.hapus.message || "Gagal menghapus data!",
+                    confirmButtonText: "OK",
+                  });
+                }
+              })
+              .catch((error) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Terjadi kesalahan: " + error.message,
+                  confirmButtonText: "OK",
+                });
+              });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

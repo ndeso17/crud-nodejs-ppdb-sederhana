@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pendaftaran (PPDB)</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">
+        Formulir Pendaftaran (PPDB)
+      </h1>
+
+      <!-- Pesan Error (jika ada) -->
+      <% if (jenisAlert === "info") { %>
+      <script>
+        Swal.fire({
+          icon: "info",
+          title: "Info",
+          text: "<%= message %>",
+          confirmButtonText: "OK",
+        });
+      </script>
+      <% } else if (jenisAlert === "success") { %>
+      <script>
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "<%= message %>",
+          confirmButtonText: "OK",
+        });
+      </script>
+      <% } else if (jenisAlert === "error") { %>
+      <script>
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "<%= message %>",
+          confirmButtonText: "OK",
+        });
+      </script>
+      <% } %>
+
+      <!-- Form PPDB -->
+      <form action="/ppdb" method="POST" class="space-y-6">
+        <!-- NISN -->
+        <div class="form-group">
+          <label for="nisn" class="block text-sm font-medium text-gray-700"
+            >NISN</label
+          >
+          <input
+            type="text"
+            id="nisn"
+            name="nisn"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            placeholder="Masukkan 10 digit NISN"
+            required
+            pattern="\d{10}"
+            title="NISN harus 10 digit angka"
+          />
+        </div>
+
+        <!-- Nama -->
+        <div class="form-group">
+          <label for="nama" class="block text-sm font-medium text-gray-700"
+            >Nama Lengkap</label
+          >
+          <input
+            type="text"
+            id="nama"
+            name="nama"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            placeholder="Masukkan nama lengkap"
+            required
+          />
+        </div>
+
+        <!-- Jenis Kelamin -->
+        <div class="form-group">
+          <label for="jk" class="block text-sm font-medium text-gray-700"
+            >Jenis Kelamin</label
+          >
+          <select
+            id="jk"
+            name="jk"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            required
+          >
+            <option value="" disabled selected>Pilih Jenis Kelamin</option>
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+          </select>
+        </div>
+
+        <!-- Asal Sekolah -->
+        <div class="form-group">
+          <label
+            for="asalsekolah"
+            class="block text-sm font-medium text-gray-700"
+            >Asal Sekolah</label
+          >
+          <input
+            type="text"
+            id="asalsekolah"
+            name="asalsekolah"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            placeholder="Masukkan nama sekolah asal"
+            required
+          />
+        </div>
+
+        <!-- Minat Jurusan (Dropdown) -->
+        <div class="form-group">
+          <label for="minat" class="block text-sm font-medium text-gray-700"
+            >Minat Jurusan</label
+          >
+          <select
+            id="minat"
+            name="minat"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            required
+          >
+            <option value="" disabled selected>Pilih Jurusan</option>
+            <option value="TKJ">TKJ (Teknik Komputer Jaringan)</option>
+            <option value="RPL">RPL (Rekayasa Perangkat Lunak)</option>
+            <option value="TBSM">TBSM (Teknik Bisnis Sepeda Motor)</option>
+            <option value="TKR">TKR (Teknik Kendaraan Ringan)</option>
+          </select>
+        </div>
+
+        <!-- Kontak -->
+        <div class="form-group">
+          <label for="kontak" class="block text-sm font-medium text-gray-700"
+            >Kontak (Nomor Telepon)</label
+          >
+          <input
+            type="text"
+            id="kontak"
+            name="kontak"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            placeholder="Masukkan nomor telepon"
+            required
+            pattern="\d{10,15}"
+            title="Kontak harus 10-15 digit angka"
+          />
+        </div>
+
+        <!-- Alamat -->
+        <div class="form-group">
+          <label for="alamat" class="block text-sm font-medium text-gray-700"
+            >Alamat</label
+          >
+          <textarea
+            id="alamat"
+            name="alamat"
+            rows="4"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
+            placeholder="Masukkan alamat lengkap"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Tombol Submit -->
+        <div class="text-center">
+          <button
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+          >
+            Daftar
+          </button>
+          <a
+            href="/"
+            class="ml-4 text-blue-500 hover:text-blue-700 font-semibold"
+          >
+            Kembali
+          </a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
