@@ -19,3 +19,8 @@ npm run develop
 ```
 npm run developwin
 ```
+
+#### 🚀 Demo
+
+- **Home:** [ppdb.naxgrinting.my.id](https://ppdb.naxgrinting.my.id)
+- **Dashboard:** [ppdb.naxgrinting.my.id/dashboard](https://ppdb.naxgrinting.my.id/dashboard)
